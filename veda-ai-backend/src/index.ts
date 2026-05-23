@@ -8,23 +8,8 @@ import assignmentRoutes from './routes/assignment.routes';
 import { initWebSocket } from './websocket/socketServer';
 import { initWorker } from './queues/worker';
 
-const allowedOrigins = [
-  'https://veda-ai-jr9s.onrender.com',
-  'https://veda-ai-git-main-shivanshu-kashyap-09s-projects.vercel.app',
-  'http://localhost:5173',
-  'http://localhost:3000',
-];
-
 const corsOptions = {
-  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    // Allow requests with no origin (mobile apps, curl, etc)
-    if (!origin) return callback(null, true);
-    // Allow all vercel preview deployments
-    if (origin.endsWith('.vercel.app') || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    callback(null, false);
-  },
+  origin: true,
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization'],
   credentials: true,
@@ -35,16 +20,16 @@ dotenv.config();
 const app = express();
 app.use(cors(corsOptions));
 app.use((req, res, next) => {
+  res.setHeader('Vary', 'Origin');
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   if (req.method === 'OPTIONS') {
-    cors(corsOptions)(req, res, () => {
-      if (req.headers['access-control-request-private-network']) {
-        res.setHeader('Access-Control-Allow-Private-Network', 'true');
-      }
-      res.sendStatus(204);
-    });
-  } else {
-    next();
+    if (req.headers['access-control-request-private-network']) {
+      res.setHeader('Access-Control-Allow-Private-Network', 'true');
+    }
+    return res.sendStatus(204);
   }
+  next();
 });
 app.use(express.json());
 

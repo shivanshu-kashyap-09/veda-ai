@@ -1,8 +1,16 @@
 import { create } from 'zustand';
 import { io } from 'socket.io-client';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://veda-ai-jr9s.onrender.com/api';
-const WS_URL = import.meta.env.VITE_WS_URL || 'https://veda-ai-jr9s.onrender.com';
+const normalizeUrl = (url) => {
+  if (!url) return url;
+  if (url.startsWith('/') || /^https?:\/\//i.test(url)) {
+    return url;
+  }
+  return `https://${url}`;
+};
+
+const API_BASE_URL = normalizeUrl(import.meta.env.VITE_API_BASE_URL || 'https://veda-ai-jr9s.onrender.com/api');
+const WS_URL = normalizeUrl(import.meta.env.VITE_WS_URL || 'https://veda-ai-jr9s.onrender.com');
 
 const parseJsonSafe = async (response) => {
   const text = await response.text();
