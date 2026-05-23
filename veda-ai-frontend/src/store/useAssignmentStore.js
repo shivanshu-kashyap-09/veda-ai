@@ -11,6 +11,17 @@ const DEFAULT_WS_URL = typeof window !== 'undefined' && window.location.hostname
   : undefined;
 const WS_URL = import.meta.env.VITE_WS_URL || DEFAULT_WS_URL;
 
+const parseJsonSafe = async (response) => {
+  const text = await response.text();
+  if (!text) return null;
+
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    throw new Error('Invalid JSON response from server');
+  }
+};
+
 export const useAssignmentStore = create((set, get) => ({
   assignmentId: null,
   jobId: null,
@@ -27,7 +38,7 @@ export const useAssignmentStore = create((set, get) => ({
     try {
       const response = await fetch(`${API_BASE_URL}/assignments`);
       if (!response.ok) throw new Error('Failed to fetch assignments');
-      const data = await response.json();
+      const data = await parseJsonSafe(response);
       set({ assignments: data, isLoadingAssignments: false });
     } catch (error) {
       set({ error: error.message, isLoadingAssignments: false });
@@ -64,7 +75,7 @@ export const useAssignmentStore = create((set, get) => ({
         throw new Error('Failed to create assignment');
       }
 
-      const result = await response.json();
+      const result = await parseJsonSafe(response);
       set({ assignmentId: result.assignmentId, jobId: result.jobId, status: 'generating' });
       
       // Initialize WebSocket connection to listen for updates
@@ -81,8 +92,8 @@ export const useAssignmentStore = create((set, get) => ({
     try {
       const response = await fetch(`${API_BASE_URL}/assignments/${id}`);
       if (response.ok) {
-        const data = await response.json();
-        if (data.paper) {
+        const data = await parseJsonSafe(response);
+        if (data?.paper) {
           set({ generatedPaper: data.paper, status: 'completed', progress: 100 });
         }
       }
