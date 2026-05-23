@@ -1,8 +1,15 @@
 import { create } from 'zustand';
 import { io } from 'socket.io-client';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:5000';
+const DEFAULT_API_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  ? 'http://localhost:5000/api'
+  : '/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || DEFAULT_API_BASE_URL;
+
+const DEFAULT_WS_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  ? 'http://localhost:5000'
+  : undefined;
+const WS_URL = import.meta.env.VITE_WS_URL || DEFAULT_WS_URL;
 
 export const useAssignmentStore = create((set, get) => ({
   assignmentId: null,

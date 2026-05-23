@@ -9,7 +9,7 @@ import { initWebSocket } from './websocket/socketServer';
 import { initWorker } from './queues/worker';
 
 const corsOptions = {
-  origin: ['https://veda-ai-jr9s.onrender.com', 'http://localhost:5173'],
+  origin: ['https://veda-ai-jr9s.onrender.com','https://veda-ai-git-main-shivanshu-kashyap-09s-projects.vercel.app/', 'http://localhost:5173'],
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization'],
   credentials: true,
@@ -19,6 +19,13 @@ dotenv.config();
 
 const app = express();
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS' && req.headers['access-control-request-private-network']) {
+    res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  }
+  next();
+});
 app.use(express.json());
 
 app.use('/api/assignments', assignmentRoutes);

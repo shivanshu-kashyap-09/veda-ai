@@ -17,10 +17,11 @@ npm install
 Create a `.env` file in the frontend root directory:
 
 ```env
-VITE_API_URL=http://localhost:5000
+VITE_API_BASE_URL=http://localhost:5000/api
+VITE_WS_URL=http://localhost:5000
 ```
 
-Adjust the `VITE_API_URL` to match your backend server address.
+For deployment on Vercel or another host, set `VITE_API_BASE_URL` to your backend URL and `VITE_WS_URL` to your socket server URL in the deployment environment variables.
 
 ### Run the development server
 ```bash
