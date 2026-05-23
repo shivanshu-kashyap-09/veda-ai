@@ -8,10 +8,17 @@ import assignmentRoutes from './routes/assignment.routes';
 import { initWebSocket } from './websocket/socketServer';
 import { initWorker } from './queues/worker';
 
+const corsOptions = {
+  origin: ['https://veda-ai-jr9s.onrender.com', 'http://localhost:5173'],
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: true,
+};
+
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/assignments', assignmentRoutes);
