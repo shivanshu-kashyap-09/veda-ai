@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import illustrationFound from '../assets/illustrationfound.png'
+import illustrationFound from '../assets/Illustrationfound.png'
 import { FiSearch, FiFilter, FiMoreVertical, FiPlus } from 'react-icons/fi'
 import AssignmentCard from './AssignmentCard'
 import { useAssignmentStore } from '../store/useAssignmentStore'
