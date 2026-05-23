@@ -9,8 +9,8 @@ const normalizeUrl = (url) => {
   return `https://${url}`;
 };
 
-const API_BASE_URL = normalizeUrl(import.meta.env.VITE_API_BASE_URL || 'https://veda-ai-jr9s.onrender.com/api');
-const WS_URL = normalizeUrl(import.meta.env.VITE_WS_URL || 'https://veda-ai-jr9s.onrender.com');
+const API_BASE_URL = normalizeUrl(import.meta.env.VITE_API_BASE_URL || 'https://veda-ai-xcmp-5hv65rkd9-shivanshu-kashyap-09s-projects.vercel.app/api');
+const WS_URL = normalizeUrl(import.meta.env.VITE_WS_URL || 'https://veda-ai-xcmp-5hv65rkd9-shivanshu-kashyap-09s-projects.vercel.app');
 
 const parseJsonSafe = async (response) => {
   const text = await response.text();

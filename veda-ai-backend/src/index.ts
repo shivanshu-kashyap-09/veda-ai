@@ -8,8 +8,19 @@ import assignmentRoutes from './routes/assignment.routes';
 import { initWebSocket } from './websocket/socketServer';
 import { initWorker } from './queues/worker';
 
+const allowedOrigins = [
+  'https://veda-ai-jr9s.onrender.com',
+  'https://veda-ai-git-main-shivanshu-kashyap-09s-projects.vercel.app',
+];
+
 const corsOptions = {
-  origin: true,
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error('CORS origin not allowed'));
+  },
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization'],
   credentials: true,
@@ -20,9 +31,6 @@ dotenv.config();
 const app = express();
 app.use(cors(corsOptions));
 app.use((req, res, next) => {
-  res.setHeader('Vary', 'Origin');
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
   if (req.method === 'OPTIONS') {
     if (req.headers['access-control-request-private-network']) {
       res.setHeader('Access-Control-Allow-Private-Network', 'true');

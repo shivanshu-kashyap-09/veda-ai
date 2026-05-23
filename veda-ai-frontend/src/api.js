@@ -10,7 +10,7 @@ const normalizeUrl = (url) => {
 
 const DEFAULT_API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
   ? 'http://localhost:5000/api'
-  : '/api';
+  : 'https://veda-ai-xcmp-5hv65rkd9-shivanshu-kashyap-09s-projects.vercel.app/api';
 
 const API_URL = normalizeUrl(import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || DEFAULT_API_URL);
 
