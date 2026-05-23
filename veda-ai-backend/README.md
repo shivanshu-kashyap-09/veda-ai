@@ -55,7 +55,9 @@ npm start
 - `GET /api/assignments` — list assignments
 - `GET /api/assignments/:id` — fetch a specific assignment with generated paper
 - `DELETE /api/assignments/:id` — delete an assignment
+- `GET /health` — health check endpoint
 
 ## Notes
 - The backend uses `ts-node-dev` for fast TypeScript development during `npm run dev`.
 - `npm run build` compiles TypeScript into `dist/`, and `npm start` runs the compiled output.
+- A **keep-alive cron job** runs every 5 minutes to ping the `/health` endpoint, keeping the backend active and preventing it from going to sleep (especially useful on cloud platforms like Heroku).

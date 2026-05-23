@@ -29,6 +29,7 @@
     "groq-sdk": "^1.2.0",
     "ioredis": "^5.10.1",
     "mongoose": "^9.6.2",
+    "node-cron": "^4.2.1",
     "socket.io": "^4.8.3",
     "ts-node": "^10.9.2"
   },
