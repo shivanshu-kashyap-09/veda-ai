@@ -11,12 +11,18 @@ import { initWorker } from './queues/worker';
 const allowedOrigins = [
   'https://veda-ai-jr9s.onrender.com',
   'https://veda-ai-git-main-shivanshu-kashyap-09s-projects.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:5000',
 ];
 
 const corsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.startsWith('http://localhost:') ||
+      origin.startsWith('http://127.0.0.1:')
+    ) {
       return callback(null, true);
     }
     callback(new Error('CORS origin not allowed'));

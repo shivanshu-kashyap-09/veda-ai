@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FiDownload, FiLoader } from 'react-icons/fi'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
@@ -44,8 +44,14 @@ const samplePaper = {
 const Output = ({ onNavigate }) => {
   const [notificationVisible, setNotificationVisible] = useState(true)
   const [isDownloading, setIsDownloading] = useState(false)
-  const { status, progress, generatedPaper } = useAssignmentStore()
+  const { status, progress, generatedPaper, assignmentId, fetchAssignmentResult } = useAssignmentStore()
   const paperRef = useRef(null)
+
+  useEffect(() => {
+    if (!generatedPaper && assignmentId) {
+      fetchAssignmentResult(assignmentId)
+    }
+  }, [assignmentId, generatedPaper, fetchAssignmentResult])
 
   const handleDownloadPdf = async () => {
     if (!paperRef.current) return
