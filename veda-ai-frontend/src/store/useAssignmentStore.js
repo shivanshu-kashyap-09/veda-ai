@@ -1,15 +1,8 @@
 import { create } from 'zustand';
 import { io } from 'socket.io-client';
 
-const DEFAULT_API_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
-  ? 'http://localhost:5000/api'
-  : '/api';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || DEFAULT_API_BASE_URL;
-
-const DEFAULT_WS_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
-  ? 'http://localhost:5000'
-  : undefined;
-const WS_URL = import.meta.env.VITE_WS_URL || DEFAULT_WS_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://veda-ai-jr9s.onrender.com/api';
+const WS_URL = import.meta.env.VITE_WS_URL || 'https://veda-ai-jr9s.onrender.com';
 
 const parseJsonSafe = async (response) => {
   const text = await response.text();
@@ -18,6 +11,7 @@ const parseJsonSafe = async (response) => {
   try {
     return JSON.parse(text);
   } catch (error) {
+    console.error('Failed to parse JSON. Raw response:', text.substring(0, 200));
     throw new Error('Invalid JSON response from server');
   }
 };
@@ -37,11 +31,12 @@ export const useAssignmentStore = create((set, get) => ({
     set({ isLoadingAssignments: true, error: null });
     try {
       const response = await fetch(`${API_BASE_URL}/assignments`);
-      if (!response.ok) throw new Error('Failed to fetch assignments');
+      if (!response.ok) throw new Error(`Failed to fetch assignments (${response.status})`);
       const data = await parseJsonSafe(response);
-      set({ assignments: data, isLoadingAssignments: false });
+      set({ assignments: data || [], isLoadingAssignments: false });
     } catch (error) {
-      set({ error: error.message, isLoadingAssignments: false });
+      console.error('fetchAssignments error:', error);
+      set({ error: error.message, isLoadingAssignments: false, assignments: [] });
     }
   },
 
@@ -72,10 +67,16 @@ export const useAssignmentStore = create((set, get) => ({
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create assignment');
+        const errText = await response.text();
+        throw new Error(`Server error (${response.status}): ${errText.substring(0, 100)}`);
       }
 
       const result = await parseJsonSafe(response);
+
+      if (!result || !result.assignmentId) {
+        throw new Error('Server returned empty or invalid response. Backend may not be deployed with latest code.');
+      }
+
       set({ assignmentId: result.assignmentId, jobId: result.jobId, status: 'generating' });
       
       // Initialize WebSocket connection to listen for updates
@@ -106,7 +107,10 @@ export const useAssignmentStore = create((set, get) => ({
     let socket = get().socket;
     
     if (!socket) {
-      socket = io(WS_URL);
+      socket = io(WS_URL, {
+        transports: ['websocket', 'polling'],
+        withCredentials: true,
+      });
       set({ socket });
     }
 

@@ -8,8 +8,23 @@ import assignmentRoutes from './routes/assignment.routes';
 import { initWebSocket } from './websocket/socketServer';
 import { initWorker } from './queues/worker';
 
+const allowedOrigins = [
+  'https://veda-ai-jr9s.onrender.com',
+  'https://veda-ai-git-main-shivanshu-kashyap-09s-projects.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+];
+
 const corsOptions = {
-  origin: ['https://veda-ai-jr9s.onrender.com','https://veda-ai-git-main-shivanshu-kashyap-09s-projects.vercel.app', 'http://localhost:5173'],
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    // Allow requests with no origin (mobile apps, curl, etc)
+    if (!origin) return callback(null, true);
+    // Allow all vercel preview deployments
+    if (origin.endsWith('.vercel.app') || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    callback(null, false);
+  },
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization'],
   credentials: true,

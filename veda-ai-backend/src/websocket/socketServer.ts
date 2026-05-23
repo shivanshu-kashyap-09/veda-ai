@@ -6,8 +6,15 @@ let io: WebSocketServer;
 export const initWebSocket = (server: HttpServer) => {
   io = new WebSocketServer(server, {
     cors: {
-      origin: '*', 
+      origin: (origin: any, callback: any) => {
+        if (!origin) return callback(null, true);
+        if (origin.endsWith('.vercel.app') || origin.includes('localhost') || origin.includes('onrender.com')) {
+          return callback(null, true);
+        }
+        callback(null, false);
+      },
       methods: ['GET', 'POST'],
+      credentials: true,
     },
   });
 
