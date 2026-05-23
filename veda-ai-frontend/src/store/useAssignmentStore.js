@@ -102,8 +102,11 @@ export const useAssignmentStore = create((set, get) => ({
       const response = await fetch(`${API_BASE_URL}/assignments/${id}`);
       if (response.ok) {
         const data = await parseJsonSafe(response);
+        const statusFromBackend = data?.assignment?.status || (data?.paper ? 'completed' : undefined);
         if (data?.paper) {
           set({ generatedPaper: data.paper, status: 'completed', progress: 100 });
+        } else if (statusFromBackend) {
+          set({ status: statusFromBackend });
         }
       }
     } catch (err) {

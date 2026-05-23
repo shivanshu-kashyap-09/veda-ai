@@ -44,6 +44,7 @@ const samplePaper = {
 const Output = ({ onNavigate }) => {
   const [notificationVisible, setNotificationVisible] = useState(true)
   const [isDownloading, setIsDownloading] = useState(false)
+  const [polling, setPolling] = useState(false)
   const { status, progress, generatedPaper, assignmentId, fetchAssignmentResult } = useAssignmentStore()
   const paperRef = useRef(null)
 
@@ -52,6 +53,20 @@ const Output = ({ onNavigate }) => {
       fetchAssignmentResult(assignmentId)
     }
   }, [assignmentId, generatedPaper, fetchAssignmentResult])
+
+  useEffect(() => {
+    if (!assignmentId || generatedPaper || status !== 'generating') return undefined;
+
+    setPolling(true)
+    const interval = setInterval(() => {
+      fetchAssignmentResult(assignmentId)
+    }, 3000)
+
+    return () => {
+      clearInterval(interval)
+      setPolling(false)
+    }
+  }, [assignmentId, generatedPaper, status, fetchAssignmentResult])
 
   const handleDownloadPdf = async () => {
     if (!paperRef.current) return
