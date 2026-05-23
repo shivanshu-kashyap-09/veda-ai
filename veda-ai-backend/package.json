@@ -1,0 +1,43 @@
+{
+  "name": "ai-assessment-creator",
+  "version": "1.0.0",
+  "description": "The system should allow a teacher to: Create an assignment, Generate a question paper using AI, View the generated output",
+  "keywords": [
+    "ai",
+    "full",
+    "stack"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "veda-ai"
+  },
+  "license": "ISC",
+  "author": "shivanshu kashyap",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@google/genai": "^2.5.0",
+    "bullmq": "^5.76.10",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "groq-sdk": "^1.2.0",
+    "ioredis": "^5.10.1",
+    "mongoose": "^9.6.2",
+    "socket.io": "^4.8.3",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.1",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^6.0.3"
+  }
+}
