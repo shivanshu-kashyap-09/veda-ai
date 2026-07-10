@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/vedaai';
+const MONGODB_URI = "mongodb+srv://nirmaniix_db_user:%23Falana%40201@cluster0.pxxbufc.mongodb.net/?appName=Cluster0";//process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/vedaai';
 
 export const connectDB = async () => {
   try {
